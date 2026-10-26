@@ -2,7 +2,7 @@
 
 The canonical document is maintained at [`docs/SCREENSHOTS.md`](./docs/SCREENSHOTS.md).
 
-This document catalogs the verified, running user interface screens for the **StaffSync Human Resource Management (HRM)** platform.
+This document catalogs the verified, running user interface screens for the **StaffSync Human Resource Management (HRM)** platform across all primary workflow modules.
 
 ---
 
@@ -63,3 +63,56 @@ This document catalogs the verified, running user interface screens for the **St
   - Automated punctuality status indicator flagging check-ins past 09:30 AM with a `Late` badge.
 
 ![Attendance Tracking](./screenshots/05_attendance_tracking.png)
+
+---
+
+## 6. Post Company Announcement (Modal Form)
+- **Route**: [`/announcements`](http://localhost:5173/announcements) (Modal Trigger: `+ New Announcement`)
+- **Role Perspective**: Admin / Management
+- **Key Elements**:
+  - Modal for drafting organization-wide notices (Title: *"Holiday Due to Strike"*, Content description).
+  - Priority tag assignment and author attribution.
+
+![Post Announcement Modal](./screenshots/06_post_announcement_modal.png)
+
+---
+
+## 7. Organization Announcements Feed
+- **Route**: [`/announcements`](http://localhost:5173/announcements)
+- **Role Perspective**: All System Users
+- **Key Elements**:
+  - Chronological company broadcast bulletin.
+  - Live broadcast cards showing author, timestamp, subject header, and announcement text.
+
+![Announcements Feed](./screenshots/07_announcements_feed.png)
+
+---
+
+## 8. Create Training & Development Program (Modal Form)
+- **Route**: [`/training`](http://localhost:5173/training) (Modal Trigger: `+ Create Program`)
+- **Role Perspective**: Manager / HR
+- **Key Elements**:
+  - Course setup modal capturing Program Title (*"MERN STACK"*), Curriculum Description, Trainer/Instructor (*"Tatva"*), Target Department (*"Engineering"*), and Date duration.
+
+![Create Training Program Modal](./screenshots/08_create_training_modal.png)
+
+---
+
+## 9. Training & Skill Development Programs Catalog
+- **Route**: [`/training`](http://localhost:5173/training)
+- **Role Perspective**: All System Users
+- **Key Elements**:
+  - Training metrics overview: Total Programs (`1`), Upcoming (`1`), In Progress (`0`), Completed (`0`).
+  - Course cards with department tags, instructor details, duration dates, and status lifecycle selectors.
+
+![Training Programs Catalog](./screenshots/09_training_programs_catalog.png)
+
+---
+
+## 10. Approved Leave Request Processing & Audit Trail
+- **Route**: [`/leaves`](http://localhost:5173/leaves)
+- **Role Perspective**: Employee / Manager / Admin
+- **Key Elements**:
+  - Leave ledger table recording Employee Name, Leave Type (`Annual`), Date Range (`10/25/2026 - 10/27/2026`), Reason (*"I am Sick"*), and verified `Approved` status badge.
+
+![Approved Leave Request](./screenshots/10_leave_requests_approved.png)

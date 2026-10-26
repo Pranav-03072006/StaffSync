@@ -46,6 +46,26 @@ Intuitive time-off request application with leave type categorization and automa
 Daily clock-in/out timestamps, active shift tracking, automated hours calculation, and arrival lateness status badges:
 ![Attendance Tracking](./screenshots/05_attendance_tracking.png)
 
+### 6. Company Announcements Publishing
+Modal form enabling managers and administrators to draft and publish organization-wide notices:
+![Post Announcement Modal](./screenshots/06_post_announcement_modal.png)
+
+### 7. Internal Announcements Bulletin Feed
+Live chronological feed keeping personnel informed on operational schedules, strikes, and holidays:
+![Announcements Feed](./screenshots/07_announcements_feed.png)
+
+### 8. Creating Professional Development Programs
+Course curriculum definition modal with trainer assignment and target department routing:
+![Create Training Modal](./screenshots/08_create_training_modal.png)
+
+### 9. Training Programs & Skill Development Catalog
+Interactive course catalog with lifecycle indicators and department filtering:
+![Training Catalog](./screenshots/09_training_programs_catalog.png)
+
+### 10. Processed Leave Ledger & Approval Audit
+Employee time-off records showing date durations, justifications, and managerial approval status:
+![Leave Requests Approved](./screenshots/10_leave_requests_approved.png)
+
 ---
 
 ## 🚀 Quick Start

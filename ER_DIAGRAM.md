@@ -1,15 +1,57 @@
-# ER-DIAGRAM Specification: StaffSync HRM
+# ER-DIAGRAM
 
-The canonical document is maintained at [`docs/ER_DIAGRAM.md`](./docs/ER_DIAGRAM.md).
+![HRM System ER Diagram](./docs/architecture/erd-diagram.svg)
 
-## 1. Overview & Architecture
-The **Entity-Relationship Diagram (ERD)** represents the core data structure of the **Human Resource Management System (HRM)**. It defines how various entities such as **Employee**, **Manager**, **LeaveRequest**, **Attendance**, and **Announcement** (along with extended entities like **Training**) are related and organized within the database.
+## Explanation of the HRM System ER Diagram
 
-![HRM ER Diagram](./docs/architecture/erd-diagram.svg)
+The **Entity-Relationship Diagram (ERD)** represents the core data structure of the **Human Resource Management System (HRM)**. It defines how various entities such as **Employee**, **Manager**, **LeaveRequest**, **Attendance**, and **Announcement** are related.
+
+### 1. Employee Entity
+- **Attributes**: `EmployeeID`, `FirstName`, `LastName`
+- Each employee can **submit** multiple leave requests and has associated attendance records.
+
+### 2. Manager Entity
+- **Attributes**: `ManagerID`, `FirstName`, `LastName`
+- A manager can **approve** leave requests submitted by employees and can also **post** announcements for the organization.
+
+### 3. LeaveRequest Entity
+- **Attributes**: `StartDate`, `EndDate`, `Status`
+- Represents a leave application submitted by an employee and approved or rejected by a manager.
+
+### 4. Attendance Entity
+- **Attribute**: `Date`
+- Keeps track of the daily attendance records of each employee.
+
+### 5. Announcement Entity
+- Represents organization-wide news or updates posted by managers or HR personnel.
 
 ---
 
-## 2. Interactive Mermaid ER Diagram
+## Relationships
+
+- **Employee → LeaveRequest**: An employee submits a leave request.
+- **Manager → LeaveRequest**: A manager approves or rejects a leave request.
+- **Manager → Announcement**: A manager posts announcements for employees.
+- **Employee → Attendance**: An employee records attendance daily.
+
+---
+
+## Detailed Schema & Entity Attributes
+
+### Relational Matrix
+
+| Source Entity | Relationship Verb | Target Entity | Cardinality | Business Rule |
+|---|---|---|---|---|
+| **Employee** | Submits | **LeaveRequest** | 1 to Many (1:N) | An employee can submit multiple leave requests over time. |
+| **Manager** | Approves / Rejects | **LeaveRequest** | 1 to Many (1:N) | A manager reviews and approves/rejects leave requests submitted by employees. |
+| **Manager** | Posts | **Announcement** | 1 to Many (1:N) | A manager publishes announcements for organizational communication. |
+| **Employee** | Records | **Attendance** | 1 to Many (1:N) | An employee records daily attendance with clock-in and clock-out entries. |
+| **Manager** | Assigns | **Training** | 1 to Many (1:N) | Managers create and assign professional development programs. |
+| **Employee** | Participates in | **Training** | Many to Many (N:M) | Employees enroll in or are assigned to multiple training modules. |
+
+---
+
+## Interactive Mermaid ER Diagram
 
 ```mermaid
 erDiagram
@@ -89,73 +131,7 @@ erDiagram
 
 ---
 
-## 3. Explanation of Core Entities & Attributes
-
-### 1. Employee Entity
-- **Attributes**:
-  - `EmployeeID` (Primary Key, MongoDB `_id`): Unique identifier for each employee.
-  - `FirstName`: The employee's first name.
-  - `LastName`: The employee's last name.
-  - Extended fields: `email`, `department`, `position`, `phone`, `role`.
-- **Functionality**:
-  - Each employee can submit multiple leave requests.
-  - Each employee has associated daily attendance records.
-  - Can participate in training programs and update personal profile records.
-
-### 2. Manager Entity
-- **Attributes**:
-  - `ManagerID` (Primary Key, MongoDB `_id`): Unique identifier for each manager.
-  - `FirstName`: The manager's first name.
-  - `LastName`: The manager's last name.
-  - Extended fields: `department`, `position`, `role`.
-- **Functionality**:
-  - A manager can review, approve, or reject leave requests submitted by employees.
-  - A manager can post organization-wide and department announcements.
-  - A manager can create, schedule, and assign training and development programs.
-
-### 3. LeaveRequest Entity
-- **Attributes**:
-  - `StartDate`: Beginning date of requested leave.
-  - `EndDate`: Concluding date of requested leave.
-  - `Status`: Current state of the application (`pending`, `approved`, `rejected`).
-  - Extended fields: `leaveType` (annual, sick, casual, maternity, etc.), `reason`, `approver`, `comments`.
-- **Functionality**:
-  - Represents a leave application submitted by an employee.
-  - Approved or rejected by a manager with optional review notes.
-
-### 4. Attendance Entity
-- **Attributes**:
-  - `Date`: Calendar day of the attendance record.
-  - Extended fields: `clockIn`, `clockOut`, `status` (`present`, `late`, `half-day`, `absent`), `totalHours`.
-- **Functionality**:
-  - Keeps track of the daily attendance records of each employee.
-  - Automatically assesses punctuality (e.g. arrivals after 9:30 AM marked as `late`).
-  - Calculates total worked hours upon clock-out.
-
-### 5. Announcement Entity
-- **Attributes**:
-  - `Title`: Announcement subject.
-  - `Content`: Detailed communication body.
-  - Extended fields: `author`, `targetDepartment`, `priority` (`low`, `medium`, `high`).
-- **Functionality**:
-  - Represents organization-wide news or departmental updates posted by managers or HR personnel.
-
----
-
-## 4. Entity Relationships Matrix
-
-| Source Entity | Relationship Verb | Target Entity | Cardinality | Business Rule |
-|---|---|---|---|---|
-| **Employee** | Submits | **LeaveRequest** | 1 to Many (1:N) | An employee can submit multiple leave requests over time. |
-| **Manager** | Approves / Rejects | **LeaveRequest** | 1 to Many (1:N) | A manager reviews and approves/rejects leave requests submitted by employees. |
-| **Manager** | Posts | **Announcement** | 1 to Many (1:N) | A manager publishes announcements for organizational communication. |
-| **Employee** | Records | **Attendance** | 1 to Many (1:N) | An employee records daily attendance with clock-in and clock-out entries. |
-| **Manager** | Assigns | **Training** | 1 to Many (1:N) | Managers create and assign professional development programs. |
-| **Employee** | Participates in | **Training** | Many to Many (N:M) | Employees enroll in or are assigned to multiple training modules. |
-
----
-
-## 5. Implementation Mapping to Mongoose Models
+## Codebase Implementation Mapping
 
 In the StaffSync codebase, these entities are implemented with clean schema definitions and virtual properties in [`server/src/models`](./server/src/models):
 - [`User.js`](./server/src/models/User.js): Implements `Employee` and `Manager` entities with polymorphic `role` enum (`employee`, `manager`, `admin`), along with virtual accessors for `firstName`, `lastName`, `EmployeeID`, and `ManagerID`.

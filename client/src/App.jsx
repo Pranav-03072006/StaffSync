@@ -9,6 +9,7 @@ import Employees from './pages/Employees';
 import LeaveRequests from './pages/LeaveRequests';
 import Attendance from './pages/Attendance';
 import Announcements from './pages/Announcements';
+import Training from './pages/Training';
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
             <Route path="leaves" element={<LeaveRequests />} />
             <Route path="attendance" element={<Attendance />} />
             <Route path="announcements" element={<Announcements />} />
+            <Route path="training" element={<Training />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/dashboard" replace />} />

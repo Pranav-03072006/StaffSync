@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Users, Calendar, Clock, Megaphone } from 'lucide-react';
+import { LayoutDashboard, Users, Calendar, Clock, Megaphone, GraduationCap } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function Sidebar() {
@@ -12,6 +12,7 @@ export default function Sidebar() {
     { label: 'Leave Requests', icon: Calendar, path: '/leaves' },
     { label: 'Attendance', icon: Clock, path: '/attendance' },
     { label: 'Announcements', icon: Megaphone, path: '/announcements' },
+    { label: 'Training & Dev', icon: GraduationCap, path: '/training' },
   ];
 
   return (

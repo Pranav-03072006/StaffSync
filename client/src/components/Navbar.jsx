@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { User, LogOut, Menu, X, LayoutDashboard, Users, Calendar, Clock, Megaphone } from 'lucide-react';
+import { User, LogOut, Menu, X, LayoutDashboard, Users, Calendar, Clock, Megaphone, GraduationCap, Settings } from 'lucide-react';
+import ProfileModal from './ProfileModal';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   const navItems = [
     { label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
@@ -13,6 +15,7 @@ export default function Navbar() {
     { label: 'Leave Requests', icon: Calendar, path: '/leaves' },
     { label: 'Attendance', icon: Clock, path: '/attendance' },
     { label: 'Announcements', icon: Megaphone, path: '/announcements' },
+    { label: 'Training & Dev', icon: GraduationCap, path: '/training' },
   ];
 
   return (
@@ -32,7 +35,11 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-3 border-l border-slate-200 pl-4">
+          <div
+            onClick={() => setProfileOpen(true)}
+            className="flex items-center space-x-3 border-l border-slate-200 pl-4 cursor-pointer hover:opacity-85 transition p-1.5 rounded-xl hover:bg-slate-50"
+            title="Edit Personal Profile"
+          >
             <div className="w-10 h-10 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center font-semibold">
               {user?.name ? user.name.charAt(0).toUpperCase() : <User className="w-5 h-5" />}
             </div>
@@ -51,6 +58,8 @@ export default function Navbar() {
           </button>
         </div>
       </div>
+
+      <ProfileModal isOpen={profileOpen} onClose={() => setProfileOpen(false)} />
 
       {/* Mobile navigation dropdown */}
       {mobileMenuOpen && (

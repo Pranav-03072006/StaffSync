@@ -6,18 +6,23 @@ const User = require('../src/models/User');
 const LeaveRequest = require('../src/models/LeaveRequest');
 const Attendance = require('../src/models/Attendance');
 const Announcement = require('../src/models/Announcement');
+const Training = require('../src/models/Training');
 
 let mongoServer;
 
+jest.setTimeout(300000);
+
 beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create();
+  mongoServer = await MongoMemoryServer.create({ spawn: { timeout: 60000 } });
   const uri = mongoServer.getUri();
   await mongoose.connect(uri);
-});
+}, 60000);
 
 afterAll(async () => {
   await mongoose.disconnect();
-  await mongoServer.stop();
+  if (mongoServer) {
+    await mongoServer.stop();
+  }
 });
 
 beforeEach(async () => {
@@ -25,6 +30,7 @@ beforeEach(async () => {
   await LeaveRequest.deleteMany({});
   await Attendance.deleteMany({});
   await Announcement.deleteMany({});
+  await Training.deleteMany({});
 });
 
 describe('StaffSync Backend Comprehensive Test Suite', () => {
@@ -436,4 +442,76 @@ describe('StaffSync Backend Comprehensive Test Suite', () => {
     });
   });
 
+  // ==========================================
+  // 6. TRAINING & PERSONAL PROFILE TESTS
+  // ==========================================
+  describe('6. Training & Personal Profile Management', () => {
+    it('should forbid employee from creating training programs', async () => {
+      const res = await request(app)
+        .post('/api/training')
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .send({
+          title: 'Advanced React Architecture',
+          description: 'Deep dive into state management and performance',
+          startDate: '2026-11-10',
+          endDate: '2026-11-15'
+        });
+
+      expect(res.statusCode).toEqual(403);
+    });
+
+    it('should allow manager to create a training program', async () => {
+      const res = await request(app)
+        .post('/api/training')
+        .set('Authorization', `Bearer ${managerToken}`)
+        .send({
+          title: 'Full Stack Engineering Bootcamp',
+          description: 'MERN stack best practices',
+          department: 'Engineering',
+          startDate: '2026-11-10',
+          endDate: '2026-11-20'
+        });
+
+      expect(res.statusCode).toEqual(201);
+      expect(res.body.title).toEqual('Full Stack Engineering Bootcamp');
+    });
+
+    it('should allow employees to fetch relevant training programs', async () => {
+      await request(app)
+        .post('/api/training')
+        .set('Authorization', `Bearer ${managerToken}`)
+        .send({
+          title: 'Cybersecurity Awareness',
+          description: 'Essential security training for all staff',
+          department: 'All',
+          startDate: '2026-11-05',
+          endDate: '2026-11-06'
+        });
+
+      const res = await request(app)
+        .get('/api/training')
+        .set('Authorization', `Bearer ${employeeToken}`);
+
+      expect(res.statusCode).toEqual(200);
+      expect(Array.isArray(res.body)).toBe(true);
+      expect(res.body.length).toBeGreaterThan(0);
+      expect(res.body[0].title).toEqual('Cybersecurity Awareness');
+    });
+
+    it('should allow employee to update their own personal profile', async () => {
+      const res = await request(app)
+        .put('/api/auth/profile')
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .send({
+          phone: '+1 555-0199',
+          name: 'Employee Updated'
+        });
+
+      expect(res.statusCode).toEqual(200);
+      expect(res.body.phone).toEqual('+1 555-0199');
+      expect(res.body.name).toEqual('Employee Updated');
+    });
+  });
+
 });
+

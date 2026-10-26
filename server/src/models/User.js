@@ -17,6 +17,35 @@ UserSchema.virtual('designation').get(function() {
   return this.position;
 });
 
+UserSchema.virtual('firstName')
+  .get(function() {
+    if (!this.name) return '';
+    return this.name.trim().split(' ')[0] || '';
+  })
+  .set(function(first) {
+    const last = this.lastName || '';
+    this.name = `${first} ${last}`.trim();
+  });
+
+UserSchema.virtual('lastName')
+  .get(function() {
+    if (!this.name) return '';
+    const parts = this.name.trim().split(' ');
+    return parts.length > 1 ? parts.slice(1).join(' ') : '';
+  })
+  .set(function(last) {
+    const first = this.firstName || '';
+    this.name = `${first} ${last}`.trim();
+  });
+
+UserSchema.virtual('EmployeeID').get(function() {
+  return this._id;
+});
+
+UserSchema.virtual('ManagerID').get(function() {
+  return this._id;
+});
+
 UserSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next();
   const salt = await bcrypt.genSalt(10);
